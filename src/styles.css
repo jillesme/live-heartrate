@@ -15,3 +15,19 @@ body {
   margin: 0;
 }
 
+
+body {
+  background: #0a0a0a;
+}
+
+@keyframes heartbeat {
+  0%, 40%, 100% { transform: scale(1); }
+  12% { transform: scale(1.18); }
+  24% { transform: scale(1.04); }
+}
+
+.heartbeat {
+  animation: heartbeat 1s ease-out infinite;
+  transform-origin: center;
+  filter: drop-shadow(0 0 24px rgb(244 63 94 / 0.5));
+}

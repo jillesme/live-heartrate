@@ -6,40 +6,27 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "live-heartrate",
 	"compatibility_date": "2025-09-02",
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
-	"main": "@tanstack/react-start/server-entry",
+	"compatibility_flags": ["nodejs_compat"],
+	// Custom entry so we can export the Durable Object and route /ws before TanStack Start
+	"main": "src/server.ts",
 	"observability": {
 		"enabled": true
 	},
-	"upload_source_maps": true
+	"upload_source_maps": true,
+	"routes": [
+		{ "pattern": "hr.jilles.fyi", "custom_domain": true },
+		{ "pattern": "heartrate.jilles.fyi", "custom_domain": true }
+	],
+	"durable_objects": {
+		"bindings": [{ "name": "HEART_RATE", "class_name": "HeartRate" }]
+	},
+	"exports": {
+		"HeartRate": { "type": "durable-object", "storage": "sqlite" }
+	}
 	/**
-	 * Smart Placement
-	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
+	 * Secrets:
+	 *   BROADCAST_TOKEN — shared secret the /broadcast page uses to publish readings.
+	 *   Set with: npx wrangler secret put BROADCAST_TOKEN
+	 *   Locally: put BROADCAST_TOKEN=... in .dev.vars
 	 */
-	// "placement": {  "mode": "smart" }
-	/**
-	 * Bindings
-	 * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including
-	 * databases, object storage, AI inference, real-time communication and more.
-	 * https://developers.cloudflare.com/workers/runtime-apis/bindings/
-	 */
-	/**
-	 * Environment Variables
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
-	 * Note: Use secrets to store sensitive data.
-	 * https://developers.cloudflare.com/workers/configuration/secrets/
-	 */
-	// "vars": {  "MY_VARIABLE": "production_value" }
-	/**
-	 * Static Assets
-	 * https://developers.cloudflare.com/workers/static-assets/binding/
-	 */
-	// "assets": {  "directory": "./public/",  "binding": "ASSETS" }
-	/**
-	 * Service Bindings (communicate between multiple Workers)
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
-	 */
-	// "services": [  {   "binding": "MY_SERVICE",   "service": "my-service"  } ]
 }
